@@ -1,0 +1,46 @@
+Step1:
+Failover_DR_StorageAccount
+Connect-AzAccount -Identity 
+Write-Output "Successfully connected with Automation account's Managed Identity"
+Set-AzContext -SubscriptionName “<Subscription Name>”
+Get-AzStorageAccount -ResourceGroupName “<ResourceGroup Name>”-StorageAccountName “<Storage account Name>”-IncludeGeoReplicationStats
+$job = Invoke-AzStorageAccountFailover -ResourceGroupName “<ResourceGroup Name>”- -Name “<Storage account Name>”- -Force -AsJob 
+$job | Wait-Job
+
+Step 2:
+Failover_Start_DR _ApplicationGateway
+Connect-AzAccount -Identity 
+Write-Output "Successfully connected with Automation account's Managed Identity"
+Set-AzContext -SubscriptionName “<Subscription Name>”
+
+# Get Azure Application Gateway
+$appgw=Get-AzApplicationGateway -Name “<AppGateway Name>” -ResourceGroupName “<ResourceGroup Name>” 
+# Start the Azure Application Gateway (During DR Failover)
+Start-AzApplicationGateway -ApplicationGateway $appgw
+
+Step 3:
+Failover_DR_SQL_Database
+Connect-AzAccount -Identity 
+Write-Output "Successfully connected with Automation account's Managed Identity"
+Set-AzContext -SubscriptionName “<Subscription Name>”
+
+# Initiate a planned failover from Japan east to Japan west 
+$database = Get-AzSqlDatabase -DatabaseName “<Databasename Name>”
+-ResourceGroupName “<ResourceGroup Name>” -ServerName “<AzureSQlserver Name>”
+$database | Set-AzSqlDatabaseSecondary -PartnerResourceGroupName “< Production ResourceGroup Name>” -Failover
+
+Step 4:
+Failover_DR_WebApp
+Connect-AzAccount -Identity 
+Write-Output "Successfully connected with Automation account's Managed Identity"
+Set-AzContext -SubscriptionName “<Subscription Name>”
+Get-AzWebApp -ResourceGroupName “<ResourceGroup Name>”-Name “<WebApp Name>”
+Start-AzWebApp -ResourceGroupName “<ResourceGroup Name>”-Name “<WebApp Name>”
+
+Step 5:
+Failover_DR_Start_ADF_Integrationruntime
+Connect-AzAccount -Identity 
+Write-Output "Successfully connected with Automation account's Managed Identity"
+Set-AzContext -SubscriptionName <” Subscription  Name”>
+Start-AzDataFactoryV2IntegrationRuntime -DataFactoryName <” Datafactory  Name”> -Name <” IntegartionRuntime  Name”>  -ResourceGroupName <”ResourceGroup Name”> -Force
+
