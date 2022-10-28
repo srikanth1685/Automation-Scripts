@@ -1,5 +1,5 @@
-Step: 1
-Failback_Enabling_GRS_DR_StorageAccount
+Step:1 Failback_Enabling_GRS_DR_StorageAccount
+
 Connect-AzAccount -Identity 
 Write-Output "Successfully connected with Automation account's Managed Identity"
 Set-AzContext -SubscriptionName <”Subscription Name”>
@@ -9,8 +9,9 @@ $job | Wait-Job
 Set-AzStorageAccount -ResourceGroupName <”ResourceGroup Name”> -Name <”StorageAccount Name”>  -SkuName Standard_GRS
 
 
-Step: 2
-Failback_DR_WebApp
+Step:2 Failback_DR_WebApp
+
+
 Connect-AzAccount -Identity 
 Write-Output "Successfully connected with Automation account's Managed Identity"
 Set-AzContext -SubscriptionName <”Subscription Name”>
@@ -18,9 +19,9 @@ Set-AzContext -SubscriptionName <”Subscription Name”>
 Get-AzWebApp -ResourceGroupName <”ResourceGroup Name”> -Name <”WebApp Name”> 
 Stop-AzWebApp-ResourceGroupName <”ResourceGroup Name”> -Name <”WebApp Name”>
 
+Step:3 Failback_DR_SQL_Server
 
-Step: 3
-Failback_DR_SQL_Server
+
 Connect-AzAccount -Identity 
 Write-Output "Successfully connected with Automation account's Managed Identity"
 Set-AzContext -SubscriptionName <”Subscription Name”>
@@ -29,8 +30,8 @@ Set-AzContext -SubscriptionName <”Subscription Name”>
 $database = Get-AzSqlDatabase -DatabaseName <”Database Name”>-ResourceGroupName <”ResourceGroup Name”> -ServerName <”AzureSQL server Name”>
 $database | Set-AzSqlDatabaseSecondary -PartnerResourceGroupName <” DR  ResourceGroup Name”> -Failover
 
-Step: 4
-Failback_Stop_DR_ApplicationGateway 
+Step:4 Failback_Stop_DR_ApplicationGateway 
+
 Connect-AzAccount -Identity 
 Write-Output "Successfully connected with Automation account's Managed Identity"
 Set-AzContext -SubscriptionName <” Subscription  Name”>
@@ -41,8 +42,8 @@ $appgw=Get-AzApplicationGateway -Name <”Appgateway Name”> -ResourceGroupName
 # Stop the Azure Application Gateway
 Stop-AzApplicationGateway -ApplicationGateway $appgw
 
-Step: 5
-Failback_stop_ADF_IR_DRMDFLMJWSADF 
+Step:5 Failback_stop_ADF_IR_xxxxxxxx
+ 
 Connect-AzAccount -Identity 
 Write-Output "Successfully connected with Automation account's Managed Identity"
 Set-AzContext -SubscriptionName <” Subscription  Name”>
